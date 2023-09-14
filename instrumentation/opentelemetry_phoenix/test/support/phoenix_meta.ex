@@ -1,4 +1,56 @@
 defmodule PhoenixMeta do
+  def liveview_mount do
+    %{
+      socket: %Phoenix.LiveView.Socket{
+        id: "phx-abc123",
+        endpoint: MyStoreWeb.Endpoint,
+        view: MyStoreWeb.MyLive,
+        parent_pid: nil,
+        root_pid: nil,
+        router: MyStoreWeb.Router,
+        assigns: %{__changed__: %{}, flash: %{}, live_action: nil},
+        transport_pid: nil
+      },
+      params: %{},
+      uri: "http://localhost:4000/my-live",
+      session: %{}
+    }
+  end
+
+  def liveview_handle_event do
+    %{
+      socket: %Phoenix.LiveView.Socket{
+        id: "phx-abc123",
+        endpoint: MyStoreWeb.Endpoint,
+        view: MyStoreWeb.MyLive,
+        parent_pid: nil,
+        root_pid: nil,
+        router: MyStoreWeb.Router,
+        assigns: %{__changed__: %{}, flash: %{}, live_action: nil},
+        transport_pid: nil
+      },
+      params: %{},
+      event: "my-event"
+    }
+  end
+
+  def liveview_handle_params do
+    %{
+      socket: %Phoenix.LiveView.Socket{
+        id: "phx-abc123",
+        endpoint: MyStoreWeb.Endpoint,
+        view: MyStoreWeb.MyLive,
+        parent_pid: nil,
+        root_pid: nil,
+        router: MyStoreWeb.Router,
+        assigns: %{__changed__: %{}, flash: %{}, live_action: nil},
+        transport_pid: nil
+      },
+      params: %{},
+      uri: "http://localhost:4000/my-live"
+    }
+  end
+
   def router_dispatch_exception(:plug_wrapper) do
     %{
       conn: %Plug.Conn{

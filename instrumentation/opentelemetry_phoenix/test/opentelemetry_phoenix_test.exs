@@ -266,6 +266,81 @@ defmodule OpentelemetryPhoenixTest do
              Enum.sort(Map.keys(:otel_attributes.map(event_attributes)))
   end
 
+  test "records spans for Phoenix.LiveView mount" do
+    OpentelemetryPhoenix.setup(liveview: true)
+
+    :telemetry.execute(
+      [:phoenix, :live_view, :mount, :start],
+      %{system_time: System.system_time()},
+      Meta.liveview_mount()
+    )
+
+    :telemetry.execute(
+      [:phoenix, :live_view, :mount, :stop],
+      %{duration: 444},
+      Meta.liveview_mount()
+    )
+
+    assert_receive {:span,
+                    span(
+                      name: "MyStoreWeb.MyLive.mount",
+                      attributes: attributes,
+                      parent_span_id: :undefined
+                    )}
+
+    assert %{} == :otel_attributes.map(attributes)
+  end
+
+  test "records spans for Phoenix.LiveView handle_event" do
+    OpentelemetryPhoenix.setup(liveview: true)
+
+    :telemetry.execute(
+      [:phoenix, :live_view, :handle_event, :start],
+      %{system_time: System.system_time()},
+      Meta.liveview_handle_event()
+    )
+
+    :telemetry.execute(
+      [:phoenix, :live_view, :handle_event, :stop],
+      %{duration: 444},
+      Meta.liveview_handle_event()
+    )
+
+    assert_receive {:span,
+                    span(
+                      name: "MyStoreWeb.MyLive.handle_event#my-event",
+                      attributes: attributes,
+                      parent_span_id: :undefined
+                    )}
+
+    assert %{} == :otel_attributes.map(attributes)
+  end
+
+  test "records spans for Phoenix.LiveView handle_params" do
+    OpentelemetryPhoenix.setup(liveview: true)
+
+    :telemetry.execute(
+      [:phoenix, :live_view, :handle_params, :start],
+      %{system_time: System.system_time()},
+      Meta.liveview_handle_params()
+    )
+
+    :telemetry.execute(
+      [:phoenix, :live_view, :handle_params, :stop],
+      %{duration: 444},
+      Meta.liveview_handle_params()
+    )
+
+    assert_receive {:span,
+                    span(
+                      name: "MyStoreWeb.MyLive.handle_params",
+                      attributes: attributes,
+                      parent_span_id: :undefined
+                    )}
+
+    assert %{} == :otel_attributes.map(attributes)
+  end
+
   defp x_forwarded_for_request(x_forwarded_for) do
     meta = Meta.endpoint_start()
 

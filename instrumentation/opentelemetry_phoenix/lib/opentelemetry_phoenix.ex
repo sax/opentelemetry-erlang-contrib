@@ -63,13 +63,16 @@ defmodule OpentelemetryPhoenix do
   @tracer_id __MODULE__
 
   @typedoc "Setup options"
-  @type opts :: [endpoint_prefix() | adapter()]
+  @type opts :: [endpoint_prefix() | adapter() | liveview()]
 
   @typedoc "The endpoint prefix in your endpoint. Defaults to `[:phoenix, :endpoint]`"
   @type endpoint_prefix :: {:endpoint_prefix, [atom()]}
 
   @typedoc "The phoenix server adapter being used. Optional"
   @type adapter :: {:adapter, :cowboy2 | term()}
+
+  @typedoc "Enable traces for Phoenix.LiveView"
+  @type liveview :: {:liveview, true}
 
   @doc """
   Initializes and configures the telemetry handlers.

@@ -316,6 +316,31 @@ defmodule OpentelemetryPhoenixTest do
     assert %{} == :otel_attributes.map(attributes)
   end
 
+  test "records spans for Phoenix.LiveView live_component handle_event" do
+    OpentelemetryPhoenix.setup(liveview: true)
+
+    :telemetry.execute(
+      [:phoenix, :live_component, :handle_event, :start],
+      %{system_time: System.system_time()},
+      Meta.liveview_live_component_handle_event()
+    )
+
+    :telemetry.execute(
+      [:phoenix, :live_component, :handle_event, :stop],
+      %{duration: 444},
+      Meta.liveview_live_component_handle_event()
+    )
+
+    assert_receive {:span,
+                    span(
+                      name: "MyStoreWeb.MyLive.handle_event#my-event",
+                      attributes: attributes,
+                      parent_span_id: :undefined
+                    )}
+
+    assert %{} == :otel_attributes.map(attributes)
+  end
+
   test "records spans for Phoenix.LiveView handle_params" do
     OpentelemetryPhoenix.setup(liveview: true)
 

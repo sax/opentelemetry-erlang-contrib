@@ -72,7 +72,7 @@ defmodule OpentelemetryPhoenix do
   @type adapter :: {:adapter, :cowboy2 | term()}
 
   @typedoc "Enable traces for Phoenix.LiveView"
-  @type liveview :: {:liveview, true}
+  @type liveview :: {:liveview, boolean()}
 
   @doc """
   Initializes and configures the telemetry handlers.

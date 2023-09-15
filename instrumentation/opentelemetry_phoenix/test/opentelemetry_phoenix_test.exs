@@ -291,6 +291,46 @@ defmodule OpentelemetryPhoenixTest do
     assert %{} == :otel_attributes.map(attributes)
   end
 
+  test "records exceptions for Phoenix.LiveView mount" do
+    OpentelemetryPhoenix.setup(liveview: true)
+
+    :telemetry.execute(
+      [:phoenix, :live_view, :mount, :start],
+      %{system_time: System.system_time()},
+      Meta.liveview_mount()
+    )
+
+    :telemetry.execute(
+      [:phoenix, :live_view, :mount, :exception],
+      %{duration: 444},
+      Meta.liveview_mount(:exception)
+    )
+
+    expected_status = OpenTelemetry.status(:error, "")
+
+    assert_receive {:span,
+                    span(
+                      name: "MyStoreWeb.MyLive.mount",
+                      attributes: attributes,
+                      events: events,
+                      kind: :server,
+                      parent_span_id: :undefined,
+                      status: ^expected_status
+                    )}
+
+    assert %{} == :otel_attributes.map(attributes)
+
+    [
+      event(
+        name: "exception",
+        attributes: event_attributes
+      )
+    ] = :otel_events.list(events)
+
+    assert [:"exception.message", :"exception.stacktrace", :"exception.type"] ==
+             Enum.sort(Map.keys(:otel_attributes.map(event_attributes)))
+  end
+
   test "records spans for Phoenix.LiveView handle_event" do
     OpentelemetryPhoenix.setup(liveview: true)
 

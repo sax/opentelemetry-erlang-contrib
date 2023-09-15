@@ -17,6 +17,49 @@ defmodule PhoenixMeta do
     }
   end
 
+  def liveview_mount(:exception) do
+    %{
+      socket: %Phoenix.LiveView.Socket{
+        id: "phx-abc123",
+        endpoint: MyStoreWeb.Endpoint,
+        view: MyStoreWeb.MyLive,
+        parent_pid: nil,
+        root_pid: nil,
+        router: MyStoreWeb.Router,
+        assigns: %{__changed__: %{}, flash: %{}, live_action: nil},
+        transport_pid: nil
+      },
+      kind: :error,
+      params: %{},
+      reason: :badarith,
+      stacktrace: [
+        {MyStoreWe.MyLive, :mount, 3,
+         [file: ~c"lib/my_store_web/live/my_live.ex", line: 67, error_info: %{module: Exception}]},
+        {Phoenix.LiveView.Utils, :"-maybe_call_live_view_mount!/5-fun-0-", 6,
+         [file: ~c"lib/phoenix_live_view/utils.ex", line: 394]},
+        {:telemetry, :span, 3, [file: ~c"/home/project/deps/telemetry/src/telemetry.erl", line: 321]},
+        {Phoenix.LiveView.Static, :call_mount_and_handle_params!, 5,
+         [file: ~c"lib/phoenix_live_view/static.ex", line: 278]},
+        {Phoenix.LiveView.Static, :render, 3, [file: ~c"lib/phoenix_live_view/static.ex", line: 119]},
+        {Phoenix.LiveView.Controller, :live_render, 3, [file: ~c"lib/phoenix_live_view/controller.ex", line: 39]},
+        {Phoenix.Router, :__call__, 5, [file: ~c"lib/phoenix/router.ex", line: 430]},
+        {Web.Endpoint, :plug_builder_call, 2, [file: ~c"lib/web/endpoint.ex", line: 1]},
+        {Web.Endpoint, :"call (overridable 3)", 2, [file: ~c"deps/plug/lib/plug/debugger.ex", line: 136]},
+        {Web.Endpoint, :call, 2, [file: ~c"lib/web/endpoint.ex", line: 1]},
+        {Phoenix.Endpoint.SyncCodeReloadPlug, :do_call, 4,
+         [file: ~c"lib/phoenix/endpoint/sync_code_reload_plug.ex", line: 22]},
+        {Plug.Cowboy.Handler, :init, 2, [file: ~c"lib/plug/cowboy/handler.ex", line: 11]},
+        {:cowboy_handler, :execute, 2, [file: ~c"/home/project/deps/cowboy/src/cowboy_handler.erl", line: 37]},
+        {:cowboy_stream_h, :execute, 3, [file: ~c"/home/project/deps/cowboy/src/cowboy_stream_h.erl", line: 306]},
+        {:cowboy_stream_h, :request_process, 3,
+         [file: ~c"/home/project/deps/cowboy/src/cowboy_stream_h.erl", line: 295]},
+        {:proc_lib, :init_p_do_apply, 3, [file: ~c"proc_lib.erl", line: 241]}
+      ],
+      uri: "http://localhost:4000/my-live",
+      session: %{}
+    }
+  end
+
   def liveview_handle_event do
     %{
       socket: %Phoenix.LiveView.Socket{
